@@ -1,0 +1,2 @@
+2025-01-15 22:22:52,033 - src.utils.cleanup - INFO - E:\pyrtdc\src\utils\cleanup.py:32 - Cleared 0 topics from tracking
+2025-01-15 22:22:52,050 - src.utils.cleanup - DEBUG - E:\pyrtdc\src\utils\cleanup.py:18 - COM uninitialized

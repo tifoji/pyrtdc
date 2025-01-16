@@ -1,0 +1,12 @@
+2025-01-15 22:22:18,860 - __main__ - INFO - E:\pyrtdc\main.py:46 - RTD Client initialized with heartbeat: 500ms
+2025-01-15 22:22:18,865 - __main__ - INFO - E:\pyrtdc\main.py:59 - Subscribed to SPY LAST
+2025-01-15 22:22:18,865 - __main__ - INFO - E:\pyrtdc\main.py:59 - Subscribed to SPY BID
+2025-01-15 22:22:18,865 - __main__ - INFO - E:\pyrtdc\main.py:59 - Subscribed to SPY ASK
+2025-01-15 22:22:18,870 - __main__ - INFO - E:\pyrtdc\main.py:59 - Subscribed to SPY VOLUME
+2025-01-15 22:22:18,870 - __main__ - INFO - E:\pyrtdc\main.py:59 - Subscribed to /ES:XCME LAST
+2025-01-15 22:22:18,870 - __main__ - INFO - E:\pyrtdc\main.py:59 - Subscribed to /ES:XCME BID
+2025-01-15 22:22:18,875 - __main__ - INFO - E:\pyrtdc\main.py:59 - Subscribed to /ES:XCME ASK
+2025-01-15 22:22:18,875 - __main__ - INFO - E:\pyrtdc\main.py:65 - Initialized with 7 active subscriptions
+2025-01-15 22:22:49,082 - __main__ - INFO - E:\pyrtdc\main.py:83 - Heartbeat check result: True
+2025-01-15 22:22:52,018 - __main__ - INFO - E:\pyrtdc\main.py:101 - User interrupted execution
+2025-01-15 22:22:52,050 - __main__ - INFO - E:\pyrtdc\main.py:117 - Application shutdown complete

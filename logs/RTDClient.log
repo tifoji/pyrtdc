@@ -1,0 +1,181 @@
+2025-01-15 22:22:18,850 - RTDClient - INFO - E:\pyrtdc\src\rtd\client.py:86 - RTD Client instance created
+2025-01-15 22:22:18,850 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering initialize()
+2025-01-15 22:22:18,850 - RTDClient - INFO - E:\pyrtdc\src\rtd\client.py:122 - Starting RTD server initialization
+2025-01-15 22:22:18,855 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:133 - COM server instance created
+2025-01-15 22:22:18,860 - RTDClient - INFO - E:\pyrtdc\src\rtd\client.py:140 - Server started successfully
+2025-01-15 22:22:18,860 - RTDClient - INFO - E:\pyrtdc\src\rtd\client.py:430 - Heartbeat interval set to 500ms
+2025-01-15 22:22:18,860 - RTDClient - INFO - E:\pyrtdc\src\rtd\client.py:145 - Heartbeat interval updated: 200ms -> 500ms
+2025-01-15 22:22:18,860 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting initialize
+2025-01-15 22:22:18,865 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering subscribe(QuoteType.LAST, SPY)
+2025-01-15 22:22:18,865 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:201 - Subscription raw result [True, '']
+2025-01-15 22:22:18,865 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:206 - Subscribed to SPY LAST with ID 11781
+2025-01-15 22:22:18,865 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting subscribe
+2025-01-15 22:22:18,865 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering subscribe(QuoteType.BID, SPY)
+2025-01-15 22:22:18,865 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:201 - Subscription raw result [True, '']
+2025-01-15 22:22:18,865 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:206 - Subscribed to SPY BID with ID 39963
+2025-01-15 22:22:18,865 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting subscribe
+2025-01-15 22:22:18,865 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering subscribe(QuoteType.ASK, SPY)
+2025-01-15 22:22:18,865 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:201 - Subscription raw result [True, '']
+2025-01-15 22:22:18,865 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:206 - Subscribed to SPY ASK with ID 54033
+2025-01-15 22:22:18,865 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting subscribe
+2025-01-15 22:22:18,870 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering subscribe(QuoteType.VOLUME, SPY)
+2025-01-15 22:22:18,870 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:201 - Subscription raw result [True, '']
+2025-01-15 22:22:18,870 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:206 - Subscribed to SPY VOLUME with ID 15631
+2025-01-15 22:22:18,870 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting subscribe
+2025-01-15 22:22:18,870 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering subscribe(QuoteType.LAST, /ES:XCME)
+2025-01-15 22:22:18,870 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:201 - Subscription raw result [True, '']
+2025-01-15 22:22:18,870 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:206 - Subscribed to /ES:XCME LAST with ID 26901
+2025-01-15 22:22:18,870 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting subscribe
+2025-01-15 22:22:18,870 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering subscribe(QuoteType.BID, /ES:XCME)
+2025-01-15 22:22:18,870 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:201 - Subscription raw result [True, '']
+2025-01-15 22:22:18,870 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:206 - Subscribed to /ES:XCME BID with ID 4601
+2025-01-15 22:22:18,870 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting subscribe
+2025-01-15 22:22:18,875 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering subscribe(QuoteType.ASK, /ES:XCME)
+2025-01-15 22:22:18,875 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:201 - Subscription raw result [True, '']
+2025-01-15 22:22:18,875 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:206 - Subscribed to /ES:XCME ASK with ID 38222
+2025-01-15 22:22:18,875 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting subscribe
+2025-01-15 22:22:20,883 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering UpdateNotify()
+2025-01-15 22:22:20,883 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:291 - UpdateNotify called (count: 1)
+2025-01-15 22:22:20,883 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering refresh_topics()
+2025-01-15 22:22:20,888 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:310 - RefreshData raw result [7, ((11781, 39963, 54033, 15631, 26901, 4601, 38222), (592.78, 593.1, 593.22, 56900159.0, 5992.25, 5992.0, 5992.25))]
+2025-01-15 22:22:20,888 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:322 - Received refresh data for 7 topics
+2025-01-15 22:22:20,888 - RTDClient - QUOTE - E:\pyrtdc\src\rtd\client.py:367 - [22:22:20] LIVE SPY LAST: $592.78
+2025-01-15 22:22:20,888 - RTDClient - QUOTE - E:\pyrtdc\src\rtd\client.py:367 - [22:22:20] LIVE SPY BID: $593.10
+2025-01-15 22:22:20,888 - RTDClient - QUOTE - E:\pyrtdc\src\rtd\client.py:367 - [22:22:20] LIVE SPY ASK: $593.22
+2025-01-15 22:22:20,888 - RTDClient - QUOTE - E:\pyrtdc\src\rtd\client.py:367 - [22:22:20] LIVE SPY VOLUME: 56,900,159
+2025-01-15 22:22:20,888 - RTDClient - QUOTE - E:\pyrtdc\src\rtd\client.py:367 - [22:22:20] LIVE /ES:XCME LAST: $5992.25
+2025-01-15 22:22:20,888 - RTDClient - QUOTE - E:\pyrtdc\src\rtd\client.py:367 - [22:22:20] LIVE /ES:XCME BID: $5992.00
+2025-01-15 22:22:20,893 - RTDClient - QUOTE - E:\pyrtdc\src\rtd\client.py:367 - [22:22:20] LIVE /ES:XCME ASK: $5992.25
+2025-01-15 22:22:20,893 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting refresh_topics
+2025-01-15 22:22:20,893 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting UpdateNotify
+2025-01-15 22:22:22,896 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering UpdateNotify()
+2025-01-15 22:22:22,896 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:291 - UpdateNotify called (count: 2)
+2025-01-15 22:22:22,896 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering refresh_topics()
+2025-01-15 22:22:22,896 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:310 - RefreshData raw result [3, ((4601, 38222, 26901), (5992.0, 5992.25, 5992.25))]
+2025-01-15 22:22:22,896 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:322 - Received refresh data for 3 topics
+2025-01-15 22:22:22,896 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting refresh_topics
+2025-01-15 22:22:22,896 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting UpdateNotify
+2025-01-15 22:22:24,903 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering UpdateNotify()
+2025-01-15 22:22:24,904 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:291 - UpdateNotify called (count: 3)
+2025-01-15 22:22:24,906 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering refresh_topics()
+2025-01-15 22:22:24,907 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:310 - RefreshData raw result [3, ((4601, 38222, 26901), (5992.0, 5992.25, 5992.25))]
+2025-01-15 22:22:24,909 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:322 - Received refresh data for 3 topics
+2025-01-15 22:22:24,910 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting refresh_topics
+2025-01-15 22:22:24,911 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting UpdateNotify
+2025-01-15 22:22:26,925 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering UpdateNotify()
+2025-01-15 22:22:26,926 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:291 - UpdateNotify called (count: 4)
+2025-01-15 22:22:26,928 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering refresh_topics()
+2025-01-15 22:22:26,929 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:310 - RefreshData raw result [3, ((4601, 38222, 26901), (5992.0, 5992.25, 5992.0))]
+2025-01-15 22:22:26,930 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:322 - Received refresh data for 3 topics
+2025-01-15 22:22:26,930 - RTDClient - QUOTE - E:\pyrtdc\src\rtd\client.py:367 - [22:22:26] LIVE /ES:XCME LAST: $5992.00
+2025-01-15 22:22:26,931 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting refresh_topics
+2025-01-15 22:22:26,931 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting UpdateNotify
+2025-01-15 22:22:30,956 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering UpdateNotify()
+2025-01-15 22:22:30,956 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:291 - UpdateNotify called (count: 5)
+2025-01-15 22:22:30,956 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering refresh_topics()
+2025-01-15 22:22:30,956 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:310 - RefreshData raw result [3, ((4601, 38222, 26901), (5992.0, 5992.25, 5992.0))]
+2025-01-15 22:22:30,956 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:322 - Received refresh data for 3 topics
+2025-01-15 22:22:30,956 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting refresh_topics
+2025-01-15 22:22:30,956 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting UpdateNotify
+2025-01-15 22:22:32,965 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering UpdateNotify()
+2025-01-15 22:22:32,965 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:291 - UpdateNotify called (count: 6)
+2025-01-15 22:22:32,965 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering refresh_topics()
+2025-01-15 22:22:32,970 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:310 - RefreshData raw result [3, ((4601, 38222, 26901), (5992.0, 5992.25, 5992.0))]
+2025-01-15 22:22:32,970 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:322 - Received refresh data for 3 topics
+2025-01-15 22:22:32,970 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting refresh_topics
+2025-01-15 22:22:32,970 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting UpdateNotify
+2025-01-15 22:22:34,981 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering UpdateNotify()
+2025-01-15 22:22:34,981 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:291 - UpdateNotify called (count: 7)
+2025-01-15 22:22:34,981 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering refresh_topics()
+2025-01-15 22:22:34,981 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:310 - RefreshData raw result [3, ((4601, 38222, 26901), (5992.0, 5992.25, 5992.0))]
+2025-01-15 22:22:34,986 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:322 - Received refresh data for 3 topics
+2025-01-15 22:22:34,986 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting refresh_topics
+2025-01-15 22:22:34,986 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting UpdateNotify
+2025-01-15 22:22:36,998 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering UpdateNotify()
+2025-01-15 22:22:36,998 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:291 - UpdateNotify called (count: 8)
+2025-01-15 22:22:36,998 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering refresh_topics()
+2025-01-15 22:22:36,998 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:310 - RefreshData raw result [3, ((4601, 38222, 26901), (5992.0, 5992.25, 5992.25))]
+2025-01-15 22:22:36,998 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:322 - Received refresh data for 3 topics
+2025-01-15 22:22:36,998 - RTDClient - QUOTE - E:\pyrtdc\src\rtd\client.py:367 - [22:22:36] LIVE /ES:XCME LAST: $5992.25
+2025-01-15 22:22:37,003 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting refresh_topics
+2025-01-15 22:22:37,003 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting UpdateNotify
+2025-01-15 22:22:39,013 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering UpdateNotify()
+2025-01-15 22:22:39,013 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:291 - UpdateNotify called (count: 9)
+2025-01-15 22:22:39,013 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering refresh_topics()
+2025-01-15 22:22:39,018 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:310 - RefreshData raw result [3, ((4601, 38222, 26901), (5992.0, 5992.25, 5992.25))]
+2025-01-15 22:22:39,018 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:322 - Received refresh data for 3 topics
+2025-01-15 22:22:39,018 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting refresh_topics
+2025-01-15 22:22:39,018 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting UpdateNotify
+2025-01-15 22:22:41,029 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering UpdateNotify()
+2025-01-15 22:22:41,029 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:291 - UpdateNotify called (count: 10)
+2025-01-15 22:22:41,029 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering refresh_topics()
+2025-01-15 22:22:41,029 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:310 - RefreshData raw result [3, ((4601, 38222, 26901), (5992.0, 5992.25, 5992.25))]
+2025-01-15 22:22:41,029 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:322 - Received refresh data for 3 topics
+2025-01-15 22:22:41,029 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting refresh_topics
+2025-01-15 22:22:41,029 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting UpdateNotify
+2025-01-15 22:22:43,030 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering UpdateNotify()
+2025-01-15 22:22:43,030 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:291 - UpdateNotify called (count: 11)
+2025-01-15 22:22:43,030 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering refresh_topics()
+2025-01-15 22:22:43,035 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:310 - RefreshData raw result [3, ((4601, 38222, 26901), (5992.0, 5992.25, 5992.25))]
+2025-01-15 22:22:43,035 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:322 - Received refresh data for 3 topics
+2025-01-15 22:22:43,035 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting refresh_topics
+2025-01-15 22:22:43,035 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting UpdateNotify
+2025-01-15 22:22:45,047 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering UpdateNotify()
+2025-01-15 22:22:45,047 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:291 - UpdateNotify called (count: 12)
+2025-01-15 22:22:45,048 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering refresh_topics()
+2025-01-15 22:22:45,048 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:310 - RefreshData raw result [7, ((4601, 38222, 26901, 15631, 39963, 54033, 11781), (5992.0, 5992.25, 5992.25, 56900159.0, 593.1, 593.22, 592.78))]
+2025-01-15 22:22:45,049 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:322 - Received refresh data for 7 topics
+2025-01-15 22:22:45,050 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting refresh_topics
+2025-01-15 22:22:45,050 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting UpdateNotify
+2025-01-15 22:22:47,065 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering UpdateNotify()
+2025-01-15 22:22:47,065 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:291 - UpdateNotify called (count: 13)
+2025-01-15 22:22:47,065 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering refresh_topics()
+2025-01-15 22:22:47,065 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:310 - RefreshData raw result [3, ((4601, 38222, 26901), (5992.0, 5992.25, 5992.25))]
+2025-01-15 22:22:47,070 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:322 - Received refresh data for 3 topics
+2025-01-15 22:22:47,070 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting refresh_topics
+2025-01-15 22:22:47,070 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting UpdateNotify
+2025-01-15 22:22:49,082 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering UpdateNotify()
+2025-01-15 22:22:49,082 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:291 - UpdateNotify called (count: 14)
+2025-01-15 22:22:49,082 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering refresh_topics()
+2025-01-15 22:22:49,082 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:310 - RefreshData raw result [3, ((4601, 38222, 26901), (5992.0, 5992.25, 5992.25))]
+2025-01-15 22:22:49,082 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:322 - Received refresh data for 3 topics
+2025-01-15 22:22:49,082 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting refresh_topics
+2025-01-15 22:22:49,082 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting UpdateNotify
+2025-01-15 22:22:49,082 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering check_heartbeat()
+2025-01-15 22:22:49,082 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting check_heartbeat
+2025-01-15 22:22:51,091 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering UpdateNotify()
+2025-01-15 22:22:51,091 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:291 - UpdateNotify called (count: 15)
+2025-01-15 22:22:51,091 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering refresh_topics()
+2025-01-15 22:22:51,091 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:310 - RefreshData raw result [3, ((4601, 38222, 26901), (5992.0, 5992.25, 5992.25))]
+2025-01-15 22:22:51,091 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:322 - Received refresh data for 3 topics
+2025-01-15 22:22:51,091 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting refresh_topics
+2025-01-15 22:22:51,091 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting UpdateNotify
+2025-01-15 22:22:52,018 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering Disconnect()
+2025-01-15 22:22:52,018 - RTDClient - INFO - E:\pyrtdc\src\rtd\client.py:459 - Starting disconnect sequence
+2025-01-15 22:22:52,018 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering unsubscribe(LAST, SPY)
+2025-01-15 22:22:52,018 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:261 - Unsubscribed from SPY LAST
+2025-01-15 22:22:52,018 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting unsubscribe
+2025-01-15 22:22:52,018 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering unsubscribe(BID, SPY)
+2025-01-15 22:22:52,018 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:261 - Unsubscribed from SPY BID
+2025-01-15 22:22:52,024 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting unsubscribe
+2025-01-15 22:22:52,024 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering unsubscribe(ASK, SPY)
+2025-01-15 22:22:52,024 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:261 - Unsubscribed from SPY ASK
+2025-01-15 22:22:52,024 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting unsubscribe
+2025-01-15 22:22:52,024 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering unsubscribe(VOLUME, SPY)
+2025-01-15 22:22:52,024 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:261 - Unsubscribed from SPY VOLUME
+2025-01-15 22:22:52,024 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting unsubscribe
+2025-01-15 22:22:52,024 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering unsubscribe(LAST, /ES:XCME)
+2025-01-15 22:22:52,024 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:261 - Unsubscribed from /ES:XCME LAST
+2025-01-15 22:22:52,029 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting unsubscribe
+2025-01-15 22:22:52,029 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering unsubscribe(BID, /ES:XCME)
+2025-01-15 22:22:52,029 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:261 - Unsubscribed from /ES:XCME BID
+2025-01-15 22:22:52,029 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting unsubscribe
+2025-01-15 22:22:52,029 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering unsubscribe(ASK, /ES:XCME)
+2025-01-15 22:22:52,029 - RTDClient - DEBUG - E:\pyrtdc\src\rtd\client.py:261 - Unsubscribed from /ES:XCME ASK
+2025-01-15 22:22:52,029 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting unsubscribe
+2025-01-15 22:22:52,029 - RTDClient - INFO - E:\pyrtdc\src\rtd\client.py:576 - Batch unsubscribe completed: 7/7 successful
+2025-01-15 22:22:52,033 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:114 - Entering Disconnect()
+2025-01-15 22:22:52,033 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting Disconnect
+2025-01-15 22:22:52,050 - RTDClient - INFO - E:\pyrtdc\src\rtd\client.py:473 - Server terminated
+2025-01-15 22:22:52,050 - RTDClient - INFO - E:\pyrtdc\src\rtd\client.py:481 - Disconnect completed
+2025-01-15 22:22:52,050 - RTDClient - DEBUG - E:\pyrtdc\src\core\error_handler.py:118 - Exiting Disconnect

@@ -1,0 +1,97 @@
+# Project Configuration.
+# Some additional settings have been left as ideation for scaling.
+
+project:
+  base_dir: ${RTD_ROOT}
+  config_path: ${RTD_ROOT}/config
+
+# RTD Server Configuration
+rtd:
+  progid: 'Tos.RTD'
+  typelib_guid: '{BA792DC8-807E-43E3-B484-47465D82C4D1}'
+  server_guid: '{EC0E6191-DB51-11D3-8F3E-00C04F3651B8}'
+  update_event_guid: '{A43788C1-D91B-11D3-8F39-00C04F3651B8}'
+
+# Logging Configuration
+logging:
+  console_level: QUOTE
+  file_level: INFO
+  max_bytes: 10000000
+  backup_count: 5
+
+# Timing Configuration
+timing:
+  initial_heartbeat: 200 # This is actually an internal setting value (gettr first call)
+  default_heartbeat: 500  # ms
+  heartbeat_check_interval: 30.0  # seconds
+  summary_interval: 30.0 
+  refresh_data_interval: 5.0  # seconds
+  loop_sleep_time: 2  # seconds
+  quote_update_interval: 1.0  # seconds
+  async_task_timeout: 1.0  # seconds
+  alert_manager_start_delay: 180 #seconds
+  alert_manager_warmup_period: 300 #seconds
+  chunk_delay: 10 #seconds
+
+# In 
+consumer:
+  reconnect_interval: 5
+  cleanup_interval: 3600
+  retention_period: 7200 
+
+# Thread and Process Configuration
+concurrency:
+  max_workers: 5  # Number of workers for ThreadPoolExecutor
+
+# Data Storage Configuration
+storage:
+  contract_config: 'contract_config.json'
+  lmdb_path: ${TOSRTD_ROOT}/lmdb
+  realtime_quotes_db: 'realtime_quotes.lmdb'
+  message_retention_db: 'message_retention.lmdb'
+  realtime_quotes_map_size: 104857600  # 100MB in bytes
+  message_retention_map_size: 2148483648  # 4GB  = 4294967296 in bytes
+
+# Performance Thresholds
+performance:
+  queue_size_warning_threshold: 200
+  subscription_chunk_size: 50
+  unsubscription_chunk_size: 100
+
+# Alert Configuration
+alerts:
+  discord_webhook_url: "https://discord.com/api/webhooks/1234"
+
+# Options Chain Configuration
+options:
+  index_prefixes:
+    SPX: SPXW
+    NDX: NDXP
+  futures_exchange:
+    /ES: XCME
+    /NQ: XCME
+  default_category: Stocks
+  underlying_quote_types:
+    - OPEN
+    - HIGH
+    - LOW
+    - CLOSE
+    - LAST
+    - VOLUME
+  option_quote_types:
+    - BID
+    - ASK
+    - LAST
+    - MARK
+    - VOLUME
+    - BID_SIZE
+    - ASK_SIZE
+    - LAST_SIZE
+    - IMPL_VOL
+    - DELTA
+    - GAMMA
+    - OPEN_INT
+    - OPEN
+    - HIGH
+    - LOW
+    - CLOSE
