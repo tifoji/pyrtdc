@@ -6,7 +6,7 @@ This project is a Real-Time Data Client for the ThinkorSwim Excel RTD Server. It
 ## Installation
 
 Install the required dependencies:
-    ```sh
+    ```
     pip install -r requirements.txt
     ```
 
