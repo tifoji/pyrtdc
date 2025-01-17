@@ -47,6 +47,7 @@ Also, I wanted to mention that `comtypes` is just one approach. `ctypes` and `wi
 
 - [Creating a RealTimeData Server in Excel](https://asp-blogs.azurewebsites.net/kennykerr/Rtd3)
 - [Create a RealTimeData Server in Excel](https://learn.microsoft.com/en-us/previous-versions/office/troubleshoot/office-developer/create-realtimedata-server-in-excel#more-information)
+- [Excel RTD Server](https://github.com/SublimeText/Pywin32/blob/master/lib/x32/win32com/demos/excelRTDServer.py)
 
 ## License
 
