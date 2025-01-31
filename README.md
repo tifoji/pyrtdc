@@ -49,6 +49,12 @@ Also, I wanted to mention that `comtypes` is just one approach. `ctypes` and `wi
 - [Create a RealTimeData Server in Excel](https://learn.microsoft.com/en-us/previous-versions/office/troubleshoot/office-developer/create-realtimedata-server-in-excel#more-information)
 - [Excel RTD Server](https://github.com/SublimeText/Pywin32/blob/master/lib/x32/win32com/demos/excelRTDServer.py)
 
+## Applications built/developed using pyrtdc
+
+If you would like to share your applications built on pyrtdc, please reach out/open PRs. Contributions and development are encouraged and appreciated. 
+
+- [Tos Streamlit Dashboard](https://github.com/2187Nick/tos-streamlit-dashboard/)
+
 ## License
 
 This project is licensed under the MIT License
