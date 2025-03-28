@@ -54,6 +54,7 @@ Also, I wanted to mention that `comtypes` is just one approach. `ctypes` and `wi
 If you would like to share your applications built on pyrtdc, please reach out/open PRs. Contributions and development are encouraged and appreciated. 
 
 - [Tos Streamlit Dashboard](https://github.com/2187Nick/tos-streamlit-dashboard/)
+- [Tos Market Depth RTD](https://github.com/2187Nick/tos-market-depth-rtd/tree/main)
 
 ## License
 
