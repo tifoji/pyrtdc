@@ -1,60 +1,123 @@
-# Real-Time Data Client (RTDClient)
+# pyrtdc — Python Real-Time Data Client for ThinkOrSwim
 
-This project is a Real-Time Data Client for the ThinkorSwim Excel RTD Server. It provides a synchronous interface to handle real-time market data subscriptions and updates.
-
-
-## Installation
-
-Install the required dependencies:
-    ```
-    pip install -r requirements.txt
-    ```
-
-## Usage
-
-To run the RTD client, execute 
-```
-python main.py
-```
-The client will initialize, subscribe to the specified quote types and symbols, and start receiving real-time updates & displayed in the console. For more detailed output the file_level can be set to DEBUG in config.yaml In Production this can be changed to INFO (default) or NONE
-
-Thinkorswim needs to be running to receive updates. In some installations, TOS needs to be started as an admin user as this is necessary to register the RTD prog interfaces in the windows registry. 
+A pure Python COM RTD client that receives live market data from ThinkOrSwim's RTD server with **native callback support** — the same mechanism used by C and C# implementations, achieved entirely in Python through comtypes.
 
 ![RTD Client Screenshot](rtd.PNG)
 
-## Scaling
+## How It Works
 
-This is a greatly simplified client. From tests, each client can handle roughly 300 topics reliably, but beyond that, a .NET exception is thrown. This is true for clients implemented in other languages as well.
+### The RTD Protocol
 
-In order to scale and improve performance, the project becomes far more complex and is not a candidate for general release. However, I can share some approaches that scale and run quite well:
+Microsoft's <a href="https://learn.microsoft.com/en-us/previous-versions/office/troubleshoot/office-developer/create-realtimedata-server-in-excel#more-information" target="_blank">Real-Time Data (RTD) protocol</a> is a COM-based mechanism for streaming live data, originally designed for Excel. The protocol defines two interfaces:
 
-- **Async/asyncio libraries**: Use these for everything, including all the methods for `IRtdServer` and `IRTDUpdateEvent` interfaces. `UpdateNotify` and `Disconnect` are synchronous methods inherently per server-side design, but warnings can be suppressed, although it's not an elegant design. In an async implementation, the refreshes can be done manually every n seconds without having to deal with COM message pumping/UpdateNotify. Even if it is not the most elegant way, it is well worth it for performance improvements at a larger scale.
+- **IRtdServer** (`{EC0E6191-DB51-11D3-8F3E-00C04F3651B8}`) — implemented by the data provider (TOS). Exposes `ServerStart`, `ConnectData`, `RefreshData`, `DisconnectData`, `Heartbeat`, and `ServerTerminate`.
+- **IRTDUpdateEvent** (`{A43788C1-D91B-11D3-8F39-00C04F3651B8}`) — implemented by the client (us). The server calls `UpdateNotify` on this interface when new data is available.
 
-- **TOS COM server**: Works on a Single Threaded Apartment model.
+The lifecycle is straightforward: the client passes its `IRTDUpdateEvent` callback to `ServerStart`, subscribes to topics via `ConnectData`, and the server calls `UpdateNotify` whenever data changes. The client then calls `RefreshData` to retrieve a 2D array of `[topic_id, value]` pairs.
 
-- **Memory mapping**: While memory mapping works great for topic management in the simple thin client, to scale up, it is much better to utilize caching & pub/sub architecture like Redis or zmq in conjunction with memory-efficient DBs like LMDB. This is the preferred solution. SQLite is probably another good candidate, but the former stack can easily scale up to 100K topics on the same host for low latency refreshes and data warehousing. Each client utilizes 50/60MB during market hours, so overall capacity is also constrained by RAM in such cases. Excel is really awesome in that sense, although enhanced clients can surpass Excel in performance.
+### The Callback Problem
 
-- **Multi-client setups**: I also recommend monitoring the overall space with Prometheus and Grafana.
+The critical challenge in Python is **how `UpdateNotify` gets delivered**. The RTD server calls `UpdateNotify` through the **native COM vtable** (slot 7 on `IRTDUpdateEvent`), not through `IDispatch::Invoke`. This means:
 
-- **Python?**: C++ is generally a good choice and is probably the fastest. The server-side Thinkorswim RTD is C/C++ based. C# supports native COM interop and is the preferred choice for COM, but I noticed that there have been no publicly available clients in other languages, especially Python, where implementations are more difficult as there is very little literature around the subject. The last working client was almost two decades ago.
+- **win32com** (`pythoncom.WrapObject`) — only creates `IDispatch` wrappers. When the server calls `QueryInterface(IID_IRTDUpdateEvent)`, it gets `E_NOINTERFACE`. The callback **never fires**. You're forced to poll `RefreshData` on a timer.
+- **comtypes** (`COMObject`) — builds a **real C-level vtable** at runtime via ctypes. When the server queries for `IRTDUpdateEvent`, it gets a proper interface pointer. When it calls vtable slot 7, our Python `UpdateNotify` method executes. **True native callback.**
 
-Also, I wanted to mention that `comtypes` is just one approach. `ctypes` and [`win32com`](https://github.com/tifoji/pyrtdc/wiki/win32com-example) also work great, but the syntax and procedure to build COM objects and invoke the COM operations are slightly different for each library.  
+This is why pyrtdc uses comtypes — it's the only pure Python path to native COM callbacks.
 
-- **Data Warehouse**: ClickHouse preferred
+### Reverse-Engineering the Interfaces
 
+The interface definitions in `src/rtd/interfaces.py` were derived by dumping the TOS RTD type library using comtypes:
+
+```python
+from comtypes.client import GetModule
+# Dump the TOS RTD type library — generates Python bindings in comtypes.gen
+GetModule(('{BA792DC8-807E-43E3-B484-47465D82C4D1}', 1, 0))
+```
+
+This auto-generates raw Python interface definitions with all GUIDs, dispatch IDs, and method signatures from the registered COM type library. The output was then hand-cleaned into the compact interface definitions used by the client:
+
+```python
+class IRTDUpdateEvent(IDispatch):
+    _iid_ = GUID('{A43788C1-D91B-11D3-8F39-00C04F3651B8}')
+    _idlflags_ = ['dual', 'oleautomation']
+    _methods_ = [
+        COMMETHOD([dispid(10)], HRESULT, 'UpdateNotify'),
+        COMMETHOD([dispid(11), 'propget'], HRESULT, 'HeartbeatInterval', ...),
+        COMMETHOD([dispid(11), 'propput'], HRESULT, 'HeartbeatInterval', ...),
+        COMMETHOD([dispid(12)], HRESULT, 'Disconnect'),
+    ]
+```
+
+By declaring `_com_interfaces_ = [IRTDUpdateEvent]` on our `RTDClient(COMObject)`, comtypes generates the native vtable stubs that make the callback work.
+
+### The Event Loop
+
+The main loop uses `MsgWaitForMultipleObjects` — an OS-level efficient wait that blocks the thread at the kernel until a COM message arrives:
+
+```python
+win32event.MsgWaitForMultipleObjects([], False, timeout_ms, QS_ALLINPUT)
+pythoncom.PumpWaitingMessages()
+```
+
+This is necessary because COM callbacks in an STA (Single-Threaded Apartment) are delivered through the Windows message queue. The thread must pump messages for `UpdateNotify` to fire. Unlike a naive `sleep()` + `PumpWaitingMessages()` loop (which creates blind spots where no callbacks are delivered), `MsgWaitForMultipleObjects` wakes **instantly** when data arrives and uses **zero CPU** while idle.
+
+When `UpdateNotify` fires, it calls `RefreshData` inline for immediate data processing. The main loop handles periodic housekeeping (heartbeat checks, summary display) via the timeout fallback.
+
+### STA and Message Pumping
+
+ThinkOrSwim's RTD server operates in the COM Single-Threaded Apartment model. All calls into our callback object are marshaled through the Windows message queue to ensure they execute on the client's thread. This is why:
+
+1. `pythoncom.CoInitialize()` is called at startup (enters STA)
+2. Messages must be pumped continuously (`PumpWaitingMessages`)
+3. The event loop must run on the same thread that initialized COM
+
+## Installation
+
+```
+pip install -r requirements.txt
+```
+
+## Usage
+
+```
+python main.py
+```
+
+ThinkOrSwim must be running to receive updates. Some installations require TOS to be started as admin to register the RTD COM interfaces in the Windows registry.
+
+Edit `config/config.yaml` to adjust timing, logging, and subscription parameters. Set `file_level` to `DEBUG` for detailed output, `INFO` for production.
+
+## Configuration
+
+Key timing settings in `config.yaml`:
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `initial_heartbeat` | 200ms | Initial heartbeat interval (server getter) |
+| `default_heartbeat` | 500ms | Operational heartbeat interval |
+| `heartbeat_check_interval` | 30s | How often to verify server health |
+| `loop_sleep_time` | 2s | MsgWait timeout (housekeeping interval) |
+| `summary_interval` | 30s | Display summary table interval |
+
+## Alternative Approaches
+
+`comtypes` is the recommended approach for native callbacks, but other libraries work for polling-based clients:
+
+- **<a href="https://github.com/tifoji/pyrtdc/wiki/win32com-example" target="_blank">win32com</a>** — simpler syntax via `pywin32`, but limited to `IDispatch` (no native callback). Works well with polling or timer-based refresh.
+- **ctypes** — lowest-level option, requires manual vtable construction similar to C.
 
 ## Useful Reading
 
-- [Create a RealTimeData Server in Excel](https://learn.microsoft.com/en-us/previous-versions/office/troubleshoot/office-developer/create-realtimedata-server-in-excel#more-information)
-- [Excel RTD Servers: Minimal C# Implementation](https://weblogs.asp.net/kennykerr/Rtd3/)
-- [Excel RTD Server](https://github.com/SublimeText/Pywin32/blob/master/lib/x32/win32com/demos/excelRTDServer.py)
+- <a href="https://learn.microsoft.com/en-us/previous-versions/office/troubleshoot/office-developer/create-realtimedata-server-in-excel#more-information" target="_blank">Create a RealTimeData Server in Excel</a> — Microsoft's original documentation
+- <a href="https://weblogs.asp.net/kennykerr/Rtd3/" target="_blank">Excel RTD Servers: Minimal C# Implementation</a> — Kenny Kerr's 2008 article on RTD server/client patterns
+- <a href="https://github.com/SublimeText/Pywin32/blob/master/lib/x32/win32com/demos/excelRTDServer.py" target="_blank">Excel RTD Server (pywin32 demo)</a> — Reference win32com RTD implementation
 
-## Applications built/developed using pyrtdc
+## Applications Built on pyrtdc
 
-If you would like to share your applications built on pyrtdc, please reach out/open PRs. Contributions and development are encouraged and appreciated. 
+Contributions and development are encouraged. If you've built something on pyrtdc, please open a PR.
 
-- [Tos Streamlit Dashboard](https://github.com/2187Nick/tos-streamlit-dashboard/)
-- [Tos Market Depth RTD](https://github.com/2187Nick/tos-market-depth-rtd/tree/main)
+- <a href="https://github.com/2187Nick/tos-streamlit-dashboard/" target="_blank">Tos Streamlit Dashboard</a>
+- <a href="https://github.com/2187Nick/tos-market-depth-rtd/tree/main" target="_blank">Tos Market Depth RTD</a>
 
 ## License
 
