@@ -38,15 +38,15 @@ In order to scale and improve performance, the project becomes far more complex 
 
 - **Python?**: C++ is generally a good choice and is probably the fastest. The server-side Thinkorswim RTD is C/C++ based. C# supports native COM interop and is the preferred choice for COM, but I noticed that there have been no publicly available clients in other languages, especially Python, where implementations are more difficult as there is very little literature around the subject. The last working client was almost two decades ago.
 
-Also, I wanted to mention that `comtypes` is just one approach. `ctypes` and `win32com` also work great, but the syntax and procedure to build COM objects and invoke the COM operations are slightly different for each library.  
+Also, I wanted to mention that `comtypes` is just one approach. `ctypes` and [`win32com`](https://github.com/tifoji/pyrtdc/wiki/win32com-example) also work great, but the syntax and procedure to build COM objects and invoke the COM operations are slightly different for each library.  
 
 - **Data Warehouse**: ClickHouse preferred
 
 
 ## Useful Reading
 
-- [Creating a RealTimeData Server in Excel](https://asp-blogs.azurewebsites.net/kennykerr/Rtd3)
 - [Create a RealTimeData Server in Excel](https://learn.microsoft.com/en-us/previous-versions/office/troubleshoot/office-developer/create-realtimedata-server-in-excel#more-information)
+- [Excel RTD Servers: Minimal C# Implementation](https://weblogs.asp.net/kennykerr/Rtd3/)
 - [Excel RTD Server](https://github.com/SublimeText/Pywin32/blob/master/lib/x32/win32com/demos/excelRTDServer.py)
 
 ## Applications built/developed using pyrtdc
