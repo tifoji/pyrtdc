@@ -1,5 +1,5 @@
 from datetime import datetime
-from threading import Lock
+from threading import Event, Lock
 from typing import Any, Dict, List, Optional, Tuple, Type, Union
 import pythoncom
 import time
@@ -82,7 +82,12 @@ class RTDClient(COMObject):
         # Update tracking
         self._update_notify_count = 0
         self._last_refresh_time = None
-        
+
+        # Event signaled by native UpdateNotify callback.
+        # External code (main loop) can wait on this to know when data arrived,
+        # or use MsgWaitForMultipleObjects to wake on COM messages directly.
+        self.data_ready = Event()
+
         self.logger.info("RTD Client instance created")
 
     def __enter__(self) -> 'RTDClient':
@@ -273,15 +278,21 @@ class RTDClient(COMObject):
     @validate_connection_state([RTDConnectionState.CONNECTED])
     def UpdateNotify(self) -> bool:
         """
-        Callback method for RTD server notifications.
-        Called by COM when updates are available.
-        Note: Method name capitalized to match COM interface.
-        
+        Native COM callback — called by the RTD server through the
+        IRTDUpdateEvent vtable when new data is available.
+
+        comtypes.COMObject builds a real C-level vtable, so the server
+        calls this through the native interface, NOT through IDispatch.
+
+        Increments notify counter, signals data_ready event, and
+        calls refresh_topics() inline for immediate data processing.
+
         Returns:
             bool: True if refresh was successful
         """
         self._update_notify_count += 1
-        self.logger.debug(f"UpdateNotify called (count: {self._update_notify_count})")
+        self.data_ready.set()
+        self.logger.debug(f"UpdateNotify fired (count: {self._update_notify_count})")
         return self.refresh_topics()
 
     @handle_com_error(RTDClientError)
@@ -356,7 +367,7 @@ class RTDClient(COMObject):
                 value_changed = old_value != quote.value
 
             if value_changed:
-                timestamp = datetime.now().strftime("%H:%M:%S")
+                timestamp = datetime.now().strftime("%H:%M:%S.%f")[:-3]
                 self.logger.quote(f"[{timestamp}] LIVE {symbol} {quote_type}: {str(quote)}")
             
         except Exception as e:
@@ -572,6 +583,11 @@ class RTDClient(COMObject):
         )
         return results
 
+
+    @property
+    def is_connected(self) -> bool:
+        """Check if client is currently connected."""
+        return self._state == RTDConnectionState.CONNECTED and self.server is not None
 
     def __str__(self) -> str:
         """
