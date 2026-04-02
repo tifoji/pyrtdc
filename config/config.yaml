@@ -22,8 +22,10 @@ logging:
 # Timing Configuration
 timing:
   initial_heartbeat: 200 # This is actually an internal setting value (gettr first call)
-  default_heartbeat: 500  # ms
+  default_heartbeat: 15000  # ms — MS RTD spec minimum; TOS silently clamps lower values
   heartbeat_check_interval: 30.0  # seconds
+  data_stale_sec: 60.0  # seconds — no data for this long triggers reconnect (zombie detection)
+  reconnect_delay: 5.0  # seconds — pause before reconnect attempt
   summary_interval: 30.0 
   refresh_data_interval: 5.0  # seconds
   loop_sleep_time: 2  # seconds
