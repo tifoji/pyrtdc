@@ -86,11 +86,13 @@ def main():
             now = time.time()
             last_summary_time = now
             last_heartbeat_time = now
+            last_status_time = now
 
             # Timeout for MsgWaitForMultipleObjects (milliseconds).
             # This is the maximum time we'll sleep before waking for housekeeping.
             # COM callbacks wake us instantly regardless of this value.
             WAIT_TIMEOUT_MS = int(SETTINGS['timing']['loop_sleep_time'] * 1000)
+            STATUS_INTERVAL = 300.0  # 5-minute status pulse
 
             logger.info(
                 f"Entering event loop (MsgWait timeout={WAIT_TIMEOUT_MS}ms, "
@@ -101,6 +103,19 @@ def main():
             # --- Main event loop ---
             while True:
                 try:
+                    # --- Path 1: Server-initiated disconnect ---
+                    if client.disconnected.is_set():
+                        logger.warning("Server disconnect detected — triggering reconnect")
+                        if client.reconnect():
+                            now = time.time()
+                            last_heartbeat_time = now
+                            last_summary_time = now
+                            last_status_time = now
+                            logger.info("Reconnect successful after server disconnect")
+                        else:
+                            logger.error("Reconnect failed — will retry next loop")
+                        continue
+
                     # Block at OS kernel level until:
                     #   (a) A COM message arrives (UpdateNotify callback), OR
                     #   (b) Timeout expires (housekeeping interval)
@@ -123,11 +138,34 @@ def main():
                     current_time = time.time()
 
                     # Check heartbeat periodically
+                    # Returns False on heartbeat failure OR zombie detection (stale data)
                     if current_time - last_heartbeat_time >= SETTINGS['timing']['heartbeat_check_interval']:
                         heartbeat_result = client.check_heartbeat()
                         logger.info(f"Heartbeat check: {'healthy' if heartbeat_result else 'FAILED'} "
                                     f"(UpdateNotify count: {client._update_notify_count})")
                         last_heartbeat_time = current_time
+
+                        # --- Path 2 & 3: Heartbeat failure / zombie triggers reconnect ---
+                        if not heartbeat_result:
+                            logger.warning("Heartbeat/staleness check failed — triggering reconnect")
+                            if client.reconnect():
+                                now = time.time()
+                                last_heartbeat_time = now
+                                last_summary_time = now
+                                last_status_time = now
+                                logger.info("Reconnect successful after heartbeat failure")
+                            else:
+                                logger.error("Reconnect failed — will retry next heartbeat cycle")
+
+                    # Status pulse
+                    if current_time - last_status_time >= STATUS_INTERVAL:
+                        stale = current_time - client._last_data_time
+                        logger.info(
+                            f"Status — topics={len(client.topics)}, "
+                            f"notifies={client._update_notify_count}, "
+                            f"last_data={stale:.0f}s ago"
+                        )
+                        last_status_time = current_time
 
                     # Display summary periodically
                     if current_time - last_summary_time >= SETTINGS['timing']['summary_interval']:
