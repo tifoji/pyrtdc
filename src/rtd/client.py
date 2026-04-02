@@ -88,6 +88,23 @@ class RTDClient(COMObject):
         # or use MsgWaitForMultipleObjects to wake on COM messages directly.
         self.data_ready = Event()
 
+        # Event signaled when the RTD server calls Disconnect on us
+        # (server-initiated disconnect, e.g. TOS shutdown).
+        # Main loop monitors this to trigger reconnect.
+        self.disconnected = Event()
+
+        # Staleness detection — zombie COM connection guard.
+        # If heartbeat returns healthy but no actual data arrives for
+        # _data_stale_sec seconds, the connection is considered zombie
+        # and reconnect is triggered.
+        self._last_data_time: float = time.time()
+        self._data_stale_sec: float = SETTINGS['timing'].get('data_stale_sec', 60.0)
+
+        # Status logging
+        self._startup_logged = False
+        self._status_log_interval = 300.0  # 5-minute status pulse
+        self._last_status_log_time: float = time.time()
+
         self.logger.info("RTD Client instance created")
 
     def __enter__(self) -> 'RTDClient':
@@ -323,6 +340,13 @@ class RTDClient(COMObject):
                 self.logger.debug("No new data in this update")
                 return True
 
+            # Track last time we got actual data (for staleness detection)
+            self._last_data_time = time.time()
+
+            if not self._startup_logged:
+                self._startup_logged = True
+                self.logger.info("Data flowing — first live update received")
+
             self.logger.debug(f"Received refresh data for {topic_count} topics")
             
             if isinstance(data, tuple) and len(data) == 2:
@@ -378,39 +402,131 @@ class RTDClient(COMObject):
     @validate_connection_state([RTDConnectionState.CONNECTED, RTDConnectionState.DISCONNECTED])
     def check_heartbeat(self) -> bool:
         """
-        Check server heartbeat status.
-        
+        Check server heartbeat status and data staleness.
+
+        Returns True only if heartbeat is healthy AND data is not stale.
+        A healthy heartbeat with stale data indicates a zombie COM connection
+        (TOS restarted but the old COM link is dead).
+
         Returns:
-            bool: True if heartbeat is healthy, False otherwise
-            
-        Raises:
-            RTDHeartbeatError: If heartbeat check fails
-            RTDConnectionError: If called in invalid state
+            bool: True if heartbeat healthy and data flowing, False otherwise
         """
         if self._state == RTDConnectionState.DISCONNECTED:
             self.logger.debug("Heartbeat check skipped - disconnected state")
             return False
-            
+
         try:
             result = self.server.Heartbeat()
             is_healthy = result == 1
-            
+
             if not is_healthy:
                 self.logger.warning(
                     f"Unhealthy heartbeat response: {result}"
                 )
-            
-            return is_healthy
-            
+                return False
+
+            # Heartbeat passed — now check for zombie (healthy heartbeat, no data)
+            stale_sec = time.time() - self._last_data_time
+            if stale_sec > self._data_stale_sec:
+                self.logger.warning(
+                    f"Zombie detected — heartbeat healthy but no data for "
+                    f"{stale_sec:.0f}s (threshold {self._data_stale_sec:.0f}s)"
+                )
+                return False
+
+            return True
+
         except Exception as e:
             self.logger.error(f"Heartbeat check failed: {e}")
             raise RTDHeartbeatError("Heartbeat operation failed") from e
+
+    def reconnect(self) -> bool:
+        """
+        Reconnect to the RTD server, restoring all previous subscriptions.
+
+        Performs:
+        1. Snapshot current topic subscriptions
+        2. Tear down existing COM connection
+        3. Re-initialize COM and server
+        4. Re-subscribe to all previously active topics
+
+        Returns:
+            bool: True if reconnect succeeded and topics restored
+        """
+        self.logger.info("Reconnect initiated — snapshotting topics")
+
+        # 1. Snapshot
+        with self._topic_lock:
+            snapshot = list(self.topics.values())  # [(symbol, quote_type), ...]
+        self.logger.info(f"Snapshot: {len(snapshot)} topics to restore")
+
+        # 2. Tear down
+        try:
+            if self.server is not None:
+                try:
+                    self.server.ServerTerminate()
+                except Exception:
+                    pass
+                self.server = None
+            cleanup.cleanup_com()
+        except Exception as e:
+            self.logger.warning(f"Cleanup during reconnect: {e}")
+
+        self._state = RTDConnectionState.DISCONNECTED
+        with self._topic_lock:
+            self.topics.clear()
+
+        # Pause before reconnect
+        delay = SETTINGS['timing'].get('reconnect_delay', 5.0)
+        self.logger.info(f"Waiting {delay}s before reconnect attempt")
+        time.sleep(delay)
+
+        # 3. Re-initialize
+        try:
+            self._state = RTDConnectionState.CONNECTING
+            pythoncom.CoInitialize()
+            self.server = CreateObject(
+                GUID(SETTINGS['rtd']['progid']),
+                interface=IRtdServer
+            )
+            result = self.server.ServerStart(self)
+            if result != 1:
+                self.logger.error(f"ServerStart failed during reconnect: {result}")
+                self._state = RTDConnectionState.DISCONNECTED
+                return False
+
+            self._state = RTDConnectionState.CONNECTED
+            self.heartbeat_interval = SETTINGS['timing']['default_heartbeat']
+            self.logger.info("Server re-started successfully")
+        except Exception as e:
+            self.logger.error(f"Reconnect initialization failed: {e}")
+            self._state = RTDConnectionState.DISCONNECTED
+            return False
+
+        # 4. Restore subscriptions
+        restored = 0
+        for symbol, quote_type in snapshot:
+            try:
+                tid = self.subscribe(quote_type, symbol)
+                if tid is not None:
+                    restored += 1
+            except Exception as e:
+                self.logger.error(f"Failed to restore {symbol} {quote_type}: {e}")
+
+        # Reset tracking state
+        self._last_data_time = time.time()
+        self._startup_logged = False
+        self._update_notify_count = 0
+        self.disconnected.clear()
+
+        self.logger.info(f"Reconnect complete — restored {restored}/{len(snapshot)} topics")
+        return restored > 0
 
     @property
     def heartbeat_interval(self) -> int:
         """
         Get current heartbeat interval in milliseconds.
-        
+
         Returns:
             int: Current heartbeat interval
         """
@@ -436,42 +552,51 @@ class RTDClient(COMObject):
     @handle_com_error(RTDServerError)
     @log_method_call()
     @validate_connection_state([RTDConnectionState.CONNECTED, RTDConnectionState.CONNECTING])
-    def Disconnect(self) -> None:
+    def Disconnect(self, _client_initiated: bool = False) -> None:
         """
         Disconnect from the RTD server and cleanup resources.
-        Note: Method name capitalized to match COM interface.
-        
+
+        This method serves dual purpose:
+        - **Server-initiated** (dispid 12 callback): TOS calls this when it exits.
+          Sets the `disconnected` event so the main loop can trigger reconnect.
+        - **Client-initiated**: Called by __exit__ or user code for orderly shutdown.
+          Pass _client_initiated=True to skip signaling disconnected event.
+
         Performs orderly shutdown:
         1. Unsubscribes from all topics
         2. Terminates server connection
         3. Releases COM resources
-        
-        Raises:
-            RTDServerError: If server termination fails
-            RTDConnectionError: If called in invalid state
         """
         with self._lock:
             if self._state == RTDConnectionState.DISCONNECTED:
                 self.logger.info("Already disconnected")
                 return
-                
+
             if self._state == RTDConnectionState.DISCONNECTING:
                 self.logger.info("Disconnect already in progress")
                 return
-                
+
+            # Detect server-initiated disconnect (COM callback)
+            if not _client_initiated:
+                self.logger.warning(
+                    "Disconnect invoked (server-initiated or COM callback) — "
+                    "signaling disconnected event for reconnect"
+                )
+                self.disconnected.set()
+
             self._state = RTDConnectionState.DISCONNECTING
             self.logger.info("Starting disconnect sequence")
-            
+
             try:
                 # Unsubscribe but can be optional as Excel doesn't seem to do it or not
                 # very effectively for large number of topics
                 subscriptions = [(qt, sym) for sym, qt in self.topics.values()]
                 if subscriptions:
                     unsubscribe_results = self.batch_unsubscribe(subscriptions)
-                    
+
                 # Clear any remaining topics from memory
                 cleanup.cleanup_topics(self.topics)
-                
+
                 if self.server is not None:
                     try:
                         self.server.ServerTerminate()
@@ -480,11 +605,11 @@ class RTDClient(COMObject):
                         self.logger.error(f"Error terminating server: {e}")
                     finally:
                         self.server = None
-                
+
                 cleanup.cleanup_com()
                 self._state = RTDConnectionState.DISCONNECTED
                 self.logger.info("Disconnect completed")
-                
+
             except Exception as e:
                 self.logger.error(f"Error during disconnect: {e}")
                 raise
@@ -511,7 +636,7 @@ class RTDClient(COMObject):
         try:
             if exc_type is not None:
                 self.logger.error(f"Context exit due to error: {exc_val}")
-            self.Disconnect()
+            self.Disconnect(_client_initiated=True)
         except Exception as e:
             self.logger.error(f"Error during context exit: {e}")
             if exc_type is None:
