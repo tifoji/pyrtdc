@@ -87,6 +87,18 @@ ThinkOrSwim must be running to receive updates. Some installations require TOS t
 
 Edit `config/config.yaml` to adjust timing, logging, and subscription parameters. Set `file_level` to `DEBUG` for detailed output, `INFO` for production.
 
+## Auto-Reconnect
+
+The client automatically detects and recovers from three failure modes:
+
+1. **Server disconnect** — TOS calls `IRTDUpdateEvent.Disconnect()` when it exits. The client detects this instantly via the `disconnected` event and reconnects.
+
+2. **Heartbeat failure** — The periodic `Heartbeat()` call returns unhealthy. The client triggers reconnect instead of just logging a warning.
+
+3. **Zombie detection** — The most subtle failure: TOS restarts but the old COM connection appears alive (heartbeat passes). The client tracks `_last_data_time` and if no actual data arrives for 60 seconds despite a healthy heartbeat, it declares the connection zombie and reconnects.
+
+On reconnect, the client snapshots all active subscriptions, tears down the COM connection, re-initializes, and restores every topic. The main loop resets all timers so housekeeping resumes cleanly.
+
 ## Configuration
 
 Key timing settings in `config.yaml`:
@@ -94,8 +106,10 @@ Key timing settings in `config.yaml`:
 | Setting | Default | Description |
 |---------|---------|-------------|
 | `initial_heartbeat` | 200ms | Initial heartbeat interval (server getter) |
-| `default_heartbeat` | 500ms | Operational heartbeat interval |
+| `default_heartbeat` | 15000ms | Operational heartbeat — MS RTD spec minimum |
 | `heartbeat_check_interval` | 30s | How often to verify server health |
+| `data_stale_sec` | 60s | No-data threshold for zombie detection |
+| `reconnect_delay` | 5s | Pause before reconnect attempt |
 | `loop_sleep_time` | 2s | MsgWait timeout (housekeeping interval) |
 | `summary_interval` | 30s | Display summary table interval |
 
